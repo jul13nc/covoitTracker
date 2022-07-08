@@ -1,1 +1,31 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.title{
+  margin-left: 5px;
+  margin-right: 40px;
+}
+
+.app-content-container {
+  margin: 10px;
+}
+
+.membersHeader th {
+  width: 100px;
+  text-align: right;
+}
+
+.full-width-table {
+  width: 100%;
+}
+
+
+/*.membersTable td {*/
+/*  width: 150px;*/
+/*}*/
+
+.tripsTable td {
+  width: 300px;
+}
