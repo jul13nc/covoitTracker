@@ -4,6 +4,9 @@ import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { TripsDataSource } from './trips-datasource';
 import {Trip} from "../model/trip";
+import {MatDialog} from "@angular/material/dialog";
+import {BackendService} from "../backend.service";
+import {TripDialogComponent, TripDialogResult} from "../trip-dialog/trip-dialog.component";
 
 @Component({
   selector: 'app-trips',
@@ -19,13 +22,30 @@ export class TripsComponent implements AfterViewInit {
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['date', 'driver','passengers'];
 
-  constructor() {
-    this.dataSource = new TripsDataSource();
+  constructor(private dialog: MatDialog, private backendService: BackendService) {
+    this.dataSource = new TripsDataSource(backendService);
   }
 
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     this.table.dataSource = this.dataSource;
+  }
+
+  addTrip(): void {
+    const dialogRef = this.dialog.open(TripDialogComponent, {
+      width: '400px',
+      data: {
+        task: {},
+      },
+    });
+    dialogRef
+      .afterClosed()
+      .subscribe((result: TripDialogResult|undefined) => {
+        if (!result) {
+          return;
+        }
+        // this.todo.push(result.task);
+      });
   }
 }
