@@ -36,7 +36,7 @@ export class TripsComponent implements AfterViewInit {
     const dialogRef = this.dialog.open(TripDialogComponent, {
       width: '400px',
       data: {
-        task: {},
+
       },
     });
     dialogRef
@@ -45,6 +45,7 @@ export class TripsComponent implements AfterViewInit {
         if (!result) {
           return;
         }
+        this.backendService.addTrip(result.date,result.driver,result.passengers);
         // this.todo.push(result.task);
       });
   }

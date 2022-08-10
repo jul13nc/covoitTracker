@@ -1,11 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {BackendService} from "../backend.service";
 import {Member} from "../model/member";
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 
 export interface TripDialogResult {
   date: Date,
-  driver: String,
-  passengers: String[]
+  driver: number,
+  passengers: number[]
+}
+
+export interface TripDialogData {
+  date: Date,
+  driver: number,
+  passengers: number[]
 }
 
 
@@ -17,16 +24,15 @@ export interface TripDialogResult {
 export class TripDialogComponent implements OnInit {
 
   members: Member[] = []
-  passagers: Member[] = []
-  driver: number | undefined
+  passengers: Member[] = []
 
-  constructor(private backendService: BackendService) {
+  constructor(private backendService: BackendService,
+              @Inject(MAT_DIALOG_DATA) public data: TripDialogData) {
     backendService.getMembers().subscribe(members => this.refreshMembers(members))
   }
 
   refreshMembers(members: Member[]) {
     this.members = members
-    this.driver = undefined
     this.updatePassengers()
   }
 
@@ -34,7 +40,7 @@ export class TripDialogComponent implements OnInit {
   }
 
   updatePassengers(): void {
-    this.passagers = this.members.filter(item => (item.id != this.driver))
+    this.passengers = this.members.filter(item => (item.id != this.data.driver))
   }
 
 }
