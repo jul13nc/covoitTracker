@@ -17,7 +17,7 @@ export class MembersComponent implements OnInit {
 
   constructor(private backendService: BackendService) { }
 
-  columnsToDisplay = ['name','tripsDriver','tripsPassenger', 'ratio', 'km','co2'];
+  columnsToDisplay = ['name','nbPoints', 'km','co2'];
 
   ngOnInit(): void {
     this.getMembers();
@@ -29,17 +29,6 @@ export class MembersComponent implements OnInit {
       .subscribe(members => this.members = members);
   }
 
-  getPassengerRatio(member: Member) : number{
-    return member.nbTripPassenger/member.nbTripDriver;
-  }
-
-  getKm(member: Member) : number {
-    return ((member.nbTripDriver+member.nbTripPassenger) * 46.3);
-  }
-
-  getCo2(member: Member) : number {
-    return (member.nbTripPassenger * 46.3) * 0.1;
-  }
 
   sortData(sort: Sort) {
     const data = this.members.slice();
@@ -53,20 +42,28 @@ export class MembersComponent implements OnInit {
       switch (sort.active) {
         case 'name':
           return compare(a.name, b.name, isAsc);
-        case 'ratio':
-          return compare(a.nbTripPassenger/a.nbTripDriver, b.nbTripPassenger/b.nbTripDriver, isAsc);
-        case 'km':
-          return compare(a.nbTripPassenger+a.nbTripDriver, b.nbTripPassenger+b.nbTripDriver, isAsc);
-        case 'tripsDrivers':
-          return compare(a.nbTripDriver, b.nbTripDriver, isAsc);
-        case 'tripsPassenger':
-          return compare(a.nbTripPassenger, b.nbTripPassenger, isAsc);
+        // case 'ratio':
+        //   return compare(a.nbTripPassenger/a.nbTripDriver, b.nbTripPassenger/b.nbTripDriver, isAsc);
+        // case 'km':
+        //   return compare(a.nbTripPassenger+a.nbTripDriver, b.nbTripPassenger+b.nbTripDriver, isAsc);
+        // case 'tripsDrivers':
+        //   return compare(a.nbTripDriver, b.nbTripDriver, isAsc);
+        // case 'tripsPassenger':
+        //   return compare(a.nbTripPassenger, b.nbTripPassenger, isAsc);
         default:
           return 0;
       }
     });
   }
 
+
+  getKm(member: Member) : number {
+    return this.backendService.getKm(member)
+  }
+
+  getCo2(member: Member) : number {
+    return this.backendService.getCo2(member)
+  }
 
 }
 
