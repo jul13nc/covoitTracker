@@ -1,5 +1,5 @@
 export interface Trip {
-  id: number;
+  id: string;
   date: Date;
   driver: string,
   passengers: string[]
