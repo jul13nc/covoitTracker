@@ -21,6 +21,11 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
 import {FormsModule} from "@angular/forms";
+import { environment } from 'src/environments/environment';
+import {AngularFireModule} from "@angular/fire/compat";
+import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
+
+
 
 registerLocaleData(localeFr, 'fr');
 
@@ -46,7 +51,9 @@ registerLocaleData(localeFr, 'fr');
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    FormsModule
+    FormsModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr-FR'}

@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "covoittracker"
+  },
+  "targets": {
+    "covoittracker": {
+      "hosting": {
+        "covoitTracker": [
+          "covoittracker"
+        ]
+      }
+    }
+  }
+}
