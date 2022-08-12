@@ -29,3 +29,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .tripsTable td {
   width: 300px;
 }
+
+.centeredHeader .mat-sort-header-content {
+  margin: auto
+}

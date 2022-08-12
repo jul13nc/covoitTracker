@@ -24,6 +24,10 @@ import {FormsModule} from "@angular/forms";
 import { environment } from 'src/environments/environment';
 import {AngularFireModule} from "@angular/fire/compat";
 import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
+import { SignInComponent } from './sign-in/sign-in.component';
+import {AuthService} from "./auth.service";
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
 
 
 
@@ -34,7 +38,8 @@ registerLocaleData(localeFr, 'fr');
     AppComponent,
     MembersComponent,
     TripsComponent,
-    TripDialogComponent
+    TripDialogComponent,
+    SignInComponent
   ],
   imports: [
     BrowserModule,
@@ -51,12 +56,16 @@ registerLocaleData(localeFr, 'fr');
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatFormFieldModule,
+    MatInputModule,
     FormsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule
   ],
   providers: [
-    { provide: LOCALE_ID, useValue: 'fr-FR'}
+    { provide: LOCALE_ID, useValue: 'fr-FR'},
+    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'fill'}},
+    AuthService
   ],
   bootstrap: [AppComponent]
 })

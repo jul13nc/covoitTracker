@@ -23,7 +23,7 @@ Ajouter un trajet
     </ng-container>
 
     <ng-container matColumnDef="passengers">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      <th mat-header-cell *matHeaderCellDef >
         <mat-icon class="example-icon" aria-hidden="false" aria-label="Example user verified icon">airline_seat_recline_extra</mat-icon>
         Passagers</th>
       <td mat-cell *matCellDef="let row">{{row.passengers.join(' , ')}}</td>
