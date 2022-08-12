@@ -73,6 +73,8 @@ export class TripsDataSource extends DataSource<Trip> {
       switch (this.sort?.active) {
         case 'date': return compare(a.date, b.date, isAsc);
         case 'id': return compare(+a.id, +b.id, isAsc);
+        case 'driver': return compare(a.driver, b.driver, isAsc)
+        // case 'passengers': return compare(a.passengers, b.passengers, isAsc)
         default: return 0;
       }
     });
