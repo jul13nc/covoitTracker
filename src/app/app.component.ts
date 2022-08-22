@@ -10,6 +10,7 @@ export class AppComponent {
   title = 'covoitTracker';
   public isMobileLayout = false;
   ngOnInit() {
+    this.isMobileLayout = window.innerWidth <= 991;
     window.onresize = () => this.isMobileLayout = window.innerWidth <= 991;
   }
   constructor(public authService: AuthService) {
