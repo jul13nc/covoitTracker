@@ -20,6 +20,15 @@
       <mat-icon class="example-icon" aria-hidden="false" aria-label="Example user verified icon">directions_car</mat-icon>NbPoints </th>
     <td mat-cell *matCellDef="let member"> {{member.nbPoints}} </td>
   </ng-container>
+  <ng-container matColumnDef="stats">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header="stats" class="centeredHeader">
+      <mat-icon class="example-icon" aria-hidden="false" aria-label="Example user verified icon">query_stats</mat-icon>Stats </th>
+    <td mat-cell *matCellDef="let member"> <div *ngFor="let stat of member.tripStats">
+      <span *ngIf="stat.nbPassenger > 0 || stat.nbDrive > 0">
+      {{ stat.nbPerson +" ( " + stat.nbDrive +" / " + stat.nbPassenger + ")"}}
+        </span>
+    </div> </td>
+  </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
   <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
