@@ -9,6 +9,10 @@ export interface Member {
   name: string;
   tripStats: TripsStats[];
   nbPoints: number,
+  nbPoints2: number,
+  nbPoints3: number,
+  nbPoints4: number,
+  nbPoints5: number,
   km: number,
   co2: number
 }
