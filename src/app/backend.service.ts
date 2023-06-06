@@ -1,16 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Member, MemberDB, TripsStats} from "./model/member";
-import {Observable, of} from "rxjs";
-import {Trip} from "./model/trip";
+import {combineLatest, find, first, Observable, of, switchMap, tap} from "rxjs";
+import {Trip, TripDB} from "./model/trip";
 import {AngularFirestore} from "@angular/fire/compat/firestore";
-//
-// const EXAMPLE_TRIPS: Trip[] = [
-//   {id: 1, date: new Date(Date.now()), driver: 'loeb', passengers:['helena']},
-//   {id: 2, date: new Date(Date.now()), driver: 'One', passengers:['Two']},
-//   {id: 3, date: new Date(Date.now()), driver: 'Two', passengers:['One']},
-//   {id: 4, date: new Date(Date.now()), driver: 'loeb', passengers:['One']},
-//
-// ];
+import {filter, map} from "rxjs/operators";
 
 const KM_AR_LABALME = 46.3 * 2
 
@@ -19,108 +12,89 @@ const KM_AR_LABALME = 46.3 * 2
 })
 export class BackendService {
 
-// TODO: replace this with real data from your application
-  trips: Trip[] = []//= EXAMPLE_TRIPS
-  members: Member[] = []
+  tripsDB$: Observable<TripDB[]> = new Observable<TripDB[]>()
+  membersDB$ : Observable<MemberDB[]> = new Observable<MemberDB[]>()
+  members$ : Observable<Member[]> = new Observable<Member[]>()
 
   constructor(private store: AngularFirestore) {
     this.initMembersAndTrips()
   }
 
   private initMembersAndTrips() {
-    this.store.collection('membres').snapshotChanges().subscribe(
-      responseItems =>
-        responseItems.forEach(responseItem => {
-          let values = responseItem.payload.doc.data()
-          var member: Member = <Member>new Object()
-          // @ts-ignore
-          member.name = values.prenom// + " " + values.nom
-          // @ts-ignore
-          member.id = responseItem.payload.doc.id
-          if (responseItem.type == "added" || responseItem.type == "modified") {
-            this.addorUpdateMember(member)
-          } else if (responseItem.type == "removed") {
-            delete this.members[this.members.findIndex(t => t.id == responseItem.payload.doc.id)]
-          }
+    // Use combineLatest
+    this.membersDB$ = this.store.collection('membres').snapshotChanges().pipe(
+      map(elems => elems.map(responseItem => {
+        let values = responseItem.payload.doc.data()
+        var member: MemberDB = <MemberDB>new Object()
+        // @ts-ignore
+        member.name = values.prenom// + " " + values.nom
+        // @ts-ignore
+        member.id = responseItem.payload.doc.id
+        return member
+      })
+    ))
 
-          this.initTrips()
-        })
-    )
+    this.tripsDB$ = this.store.collection('voyages').snapshotChanges().pipe(map(
+      responseItems =>
+        responseItems.map(
+          responseItem => {
+            console.log("Item mapped " + responseItem)
+            return this.getTripFromRemoteDB(responseItem.payload.doc)
+          }
+        )
+    ))
   }
 
-  private initTrips() {
-
-    // this.store.collection('voyages').get().subscribe(
-    //   responseItems =>
-    //     responseItems.forEach(responseItem => {
-    //       let trip = this.getTripFromRemoteDB(responseItem)
-    //       this.addorUpdateTrip(trip)
-    //     })
-    // )
-    this.store.collection('voyages').snapshotChanges().subscribe(
-      responseItems =>
-        responseItems.forEach(responseItem => {
-          // console.log(responseItem.payload.doc.data())
-          if (responseItem.type == "added" || responseItem.type == "modified") {
-            let trip = this.getTripFromRemoteDB(responseItem.payload.doc)
-            this.addorUpdateTrip(trip)
-          } else if (responseItem.type == "removed") {
-            delete this.trips[this.trips.findIndex(t => t.id == responseItem.payload.doc.id)]
-          }
-
-        })
-    )
-  }
-
-  private getTripFromRemoteDB(reponseItem: firebase.default.firestore.QueryDocumentSnapshot<unknown>): Trip {
+  private getTripFromRemoteDB(reponseItem: firebase.default.firestore.QueryDocumentSnapshot<unknown>): TripDB {
     let values = reponseItem.data()
-    var trip: Trip = <Trip>new Object()
+    var trip: TripDB = <TripDB>new Object()
     trip.id = reponseItem.id
     // @ts-ignore
-    trip.driver = this.getMemberName(values.pilote)
+    trip.pilote = values.pilote
     // @ts-ignore
     trip.date = values.date.toDate()
     // @ts-ignore
-    trip.passengers = values.passagers.map(item => this.getMemberName(item))
+    trip.passagers = values.passagers
     return trip
   }
 
-  private addorUpdateTrip(trip: Trip) {
-    let index = this.trips.findIndex(t => t.id == trip.id)
-    if (index > -1) {
-      this.trips[index] = trip
-    } else {
-      this.trips.push(trip)
-    }
-  }
 
-  private addorUpdateMember(member: Member) {
-    let index = this.members.findIndex(t => t.id == member.id)
-    if (index > -1) {
-      this.members[index] = member
-    } else {
-      this.members.push(member)
-    }
+  getTrips(): Observable<Trip[]> {
+    // return this.trips$
+    return combineLatest(this.tripsDB$, this.membersDB$).pipe(
+      map( ([trips,members]) => {
+        return trips.map(tripDB => {
+          var trip: Trip = <Trip>new Object()
+          trip.id = tripDB.id
+          // @ts-ignore
+          trip.driver = this.getMemberName(tripDB.pilote, members)
+          // @ts-ignore
+          trip.date = tripDB.date
+          // @ts-ignore
+          trip.passengers = tripDB.passagers.map(pass => this.getMemberName(pass, members))
+          return trip
+        })
+      })
+    )
   }
 
   getMembers(): Observable<Member[]> {
-    this.countMembersTrips();
-    return of(this.members);
+    return combineLatest(this.tripsDB$, this.membersDB$).pipe(
+      map( ([trips,members]) => {
+        return members.map(member => {return this.countMemberTrips(member , trips)})
+      })
+    )
   }
 
-  private countMembersTrips() {
-    this.members = this.members.map(db => this.countMemberTrips(db))
-  }
-
-  private countMemberTrips(db: MemberDB): Member {
+  private countMemberTrips(db: MemberDB, trips: TripDB[]): Member {
     var member: Member = <Member>new Object()
     member.name = db.name
     member.id = db.id
     member.tripStats = []
-    member.tripStats.push(computeStatsForTrips(this.trips, 2, member))
-    member.tripStats.push(computeStatsForTrips(this.trips, 3, member))
-    member.tripStats.push(computeStatsForTrips(this.trips, 4, member))
-    member.tripStats.push(computeStatsForTrips(this.trips, 5, member))
+    member.tripStats.push(computeStatsForTrips(trips, 2, member))
+    member.tripStats.push(computeStatsForTrips(trips, 3, member))
+    member.tripStats.push(computeStatsForTrips(trips, 4, member))
+    member.tripStats.push(computeStatsForTrips(trips, 5, member))
     member.co2 = this.getCo2(member)
     member.km = this.getKm(member)
     var nbPoints = 0
@@ -136,14 +110,9 @@ export class BackendService {
     return member
   }
 
-
-  getTrips(): Observable<Trip[]> {
-    return of(this.trips)
-  }
-
-  getMemberName(memberId: string): string {
+  getMemberName(memberId: string, members: MemberDB[]): string {
     // return this.members.find(m => m.id == memberId).name
-    const member = this.members.find(m => m.id == memberId);
+    const member = members.find(m => m.id == memberId)
     if (member) {
       return member.name
     }
@@ -159,7 +128,6 @@ export class BackendService {
     this.store.collection('voyages').add(trip)
 
   }
-
   getKm(member: Member): number {
     var nbTrajets = member.tripStats.map(function (trip) {
       return trip.nbDrive + trip.nbPassenger
@@ -180,14 +148,10 @@ export class BackendService {
 }
 
 
-function computeStatsForTrips(trips: Trip[], nbPersons: number, member: Member) {
+function computeStatsForTrips(trips: TripDB[], nbPersons: number, member: MemberDB) {
   var tripStat: TripsStats = <TripsStats>new Object()
-  tripStat.nbPassenger = trips.filter(trip => trip.passengers.length == (nbPersons - 1) && trip.passengers.includes(member.name)).length
-  tripStat.nbDrive = trips.filter(trip => trip.passengers.length == (nbPersons - 1) && trip.driver == member.name).length
+  tripStat.nbPassenger = trips.filter(trip => trip.passagers.length == (nbPersons - 1) && trip.passagers.includes(member.id)).length
+  tripStat.nbDrive = trips.filter(trip => trip.passagers.length == (nbPersons - 1) && trip.pilote == member.id).length
   tripStat.nbPerson = nbPersons
   return tripStat;
-}
-
-function nbTrips(trip: TripsStats): number {
-  return trip.nbDrive + trip.nbPassenger
 }

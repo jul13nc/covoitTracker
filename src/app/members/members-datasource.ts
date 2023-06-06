@@ -2,7 +2,7 @@ import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
-import { Observable, of as observableOf, merge } from 'rxjs';
+import {Observable, of as observableOf, merge, tap} from 'rxjs';
 import {BackendService} from "../backend.service";
 import {Member} from "../model/member";
 
@@ -14,12 +14,17 @@ import {Member} from "../model/member";
  */
 export class MembersDatasource extends DataSource<Member> {
   data: Member[] = [];
+  data$ : Observable<Member[]>
   paginator: MatPaginator | undefined;
   sort: MatSort | undefined;
 
   constructor(private backendService: BackendService) {
     super();
-    this.backendService.getMembers().subscribe(members =>this.data = members)
+    this.data$ = this.backendService.getMembers()
+    this.data$.subscribe(data => {
+      this.data = data
+      console.log("Youhou from member service " + data)
+    })
   }
 
   /**
@@ -31,7 +36,7 @@ export class MembersDatasource extends DataSource<Member> {
     if (this.paginator && this.sort) {
       // Combine everything that affects the rendered data into one update
       // stream for the data-table to consume.
-      return merge(observableOf(this.data), this.paginator.page, this.sort.sortChange)
+      return merge(this.data$, this.paginator.page, this.sort.sortChange)
         .pipe(map(() => {
           return this.getPagedData(this.getSortedData([...this.data ]));
         }));
