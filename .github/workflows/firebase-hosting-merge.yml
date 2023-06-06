@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: npm ci && npm run build
-      - env:
+        env:
           - FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           - FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
       - uses: FirebaseExtended/action-hosting-deploy@v0
