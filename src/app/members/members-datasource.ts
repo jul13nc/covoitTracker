@@ -80,6 +80,14 @@ export class MembersDatasource extends DataSource<Member> {
           return compare(a.name, b.name, isAsc);
         case 'nbPoints':
           return compare(a.nbPoints, b.nbPoints, isAsc);
+        case 'nbPoints2':
+          return compare(a.nbPoints2, b.nbPoints2, isAsc);
+        case 'nbPoints3':
+          return compare(a.nbPoints3, b.nbPoints3, isAsc);
+        case 'nbPoints4':
+          return compare(a.nbPoints4, b.nbPoints4, isAsc);
+        case 'nbPoints5':
+          return compare(a.nbPoints5, b.nbPoints5, isAsc);
         case 'km':
           return compare(a.km, b.km, isAsc);
         case 'co2':

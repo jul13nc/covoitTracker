@@ -97,17 +97,29 @@ export class BackendService {
     member.tripStats.push(computeStatsForTrips(trips, 5, member))
     member.co2 = this.getCo2(member)
     member.km = this.getKm(member)
-    var nbPoints = 0
+
+    member.nbPoints = this.computePointsForPassengersNumber( member,0);
+    member.nbPoints2 = this.computePointsForPassengersNumber( member,2);
+    member.nbPoints3 = this.computePointsForPassengersNumber( member,3);
+    member.nbPoints4 = this.computePointsForPassengersNumber( member,4);
+    member.nbPoints5 = this.computePointsForPassengersNumber( member,5);
+
+    return member
+  }
+
+  // Compute points for number of passenger
+  // If 0 passed, mean compute points for all trips
+  private computePointsForPassengersNumber(member: Member, nbPersonCounting: Number) {
     // Remove 1 point per passenger trip
-    nbPoints += member.tripStats.map(trip => trip.nbDrive * (trip.nbPerson - 1)).reduce(function (result, item) {
+    var nbPoints = 0
+    nbPoints += member.tripStats.filter(trip => trip.nbPerson == nbPersonCounting || nbPersonCounting == 0).map(trip => trip.nbDrive * (trip.nbPerson - 1)).reduce(function (result, item) {
       return result + item
     })
     // Add 1 point per passenger when driver
-    nbPoints -= member.tripStats.map(trip => trip.nbPassenger).reduce(function (result, item) {
+    nbPoints -= member.tripStats.filter(trip => trip.nbPerson == nbPersonCounting || nbPersonCounting == 0).map(trip => trip.nbPassenger).reduce(function (result, item) {
       return result + item
     })
-    member.nbPoints = nbPoints
-    return member
+    return nbPoints;
   }
 
   getMemberName(memberId: string, members: MemberDB[]): string {
