@@ -1,11 +1,13 @@
 <mat-toolbar color="primary">
   <mat-icon class="example-icon" aria-hidden="false" aria-label="Example user verified icon">rocket_launch</mat-icon>
 
-  <span class="title">Covoit du Chnord</span>
-
-
-    <a mat-button routerLink="/members">Membres</a>
-    <a mat-button routerLink="/trips">Trajets</a>
+  <span class="title" *ngIf="!isMobileLayout">Covoit du Chnord</span>
+    <a mat-button routerLink="/members" *ngIf="authService.isLoggedIn">Membres</a>
+    <a mat-button routerLink="/trips" *ngIf="authService.isLoggedIn">Trajets</a>
+  <span class="example-spacer"></span>
+  <button mat-icon-button (click)="authService.SignOut()" aria-label="Logout"  *ngIf="authService.isLoggedIn">
+    <mat-icon>logout</mat-icon>
+  </button>
 </mat-toolbar>
 <div class="app-content-container">
   <router-outlet></router-outlet>

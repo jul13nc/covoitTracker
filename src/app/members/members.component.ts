@@ -20,15 +20,17 @@ export class MembersComponent implements OnInit {
   columnsToDisplay = ['name','nbPoints', 'km','co2'];
 
   ngOnInit(): void {
+    this.members = [];
     this.getMembers();
     this.sortedMembers = this.members.slice();
   }
 
   getMembers(): void {
+    console.log("Getting members (current size is " + this.members.length)
     this.backendService.getMembers()
-      .subscribe(members => this.members = members);
+      .subscribe(members => {this.members = members
+      console.log("Received members " + members.length)});
   }
-
 
   sortData(sort: Sort) {
     const data = this.members.slice();
@@ -42,27 +44,18 @@ export class MembersComponent implements OnInit {
       switch (sort.active) {
         case 'name':
           return compare(a.name, b.name, isAsc);
-        // case 'ratio':
-        //   return compare(a.nbTripPassenger/a.nbTripDriver, b.nbTripPassenger/b.nbTripDriver, isAsc);
-        // case 'km':
-        //   return compare(a.nbTripPassenger+a.nbTripDriver, b.nbTripPassenger+b.nbTripDriver, isAsc);
-        // case 'tripsDrivers':
-        //   return compare(a.nbTripDriver, b.nbTripDriver, isAsc);
+        case 'nbPoints':
+          return compare(a.nbPoints, b.nbPoints, isAsc);
+        case 'km':
+          return compare(a.km, b.km, isAsc);
+        case 'co2':
+          return compare(a.co2, b.co2, isAsc);
         // case 'tripsPassenger':
         //   return compare(a.nbTripPassenger, b.nbTripPassenger, isAsc);
         default:
           return 0;
       }
     });
-  }
-
-
-  getKm(member: Member) : number {
-    return this.backendService.getKm(member)
-  }
-
-  getCo2(member: Member) : number {
-    return this.backendService.getCo2(member)
   }
 
 }
