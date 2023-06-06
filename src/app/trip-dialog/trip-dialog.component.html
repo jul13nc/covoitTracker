@@ -1,0 +1,27 @@
+<h4>Ajouter un trajet</h4>
+
+<div class="formField">
+  <input matInput [matDatepicker]="picker" placeholder="Date du trajet">
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</div>
+
+<div class="formField">
+  <mat-select [(value)]="driver" placeholder="Pilote" (selectionChange)="updatePassengers()">
+    <mat-option *ngFor="let member of members" [value]="member.id">
+      {{member.name}}
+    </mat-option>
+  </mat-select>
+</div>
+
+<div class="formField">
+  <mat-select multiple="true" placeholder="Passagers">
+    <mat-option *ngFor="let member of passagers" [value]="member.id">
+      {{member.name}}
+    </mat-option>
+  </mat-select>
+</div>
+
+<div class="formField">
+  <button mat-button mat-raised-button>Add</button>
+</div>

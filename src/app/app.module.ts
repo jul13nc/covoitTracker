@@ -15,6 +15,12 @@ import { MatSortModule } from '@angular/material/sort';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import {MatButtonModule} from "@angular/material/button";
+import {MatDialogModule} from "@angular/material/dialog";
+import { TripDialogComponent } from './trip-dialog/trip-dialog.component';
+import {MatSelectModule} from "@angular/material/select";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatNativeDateModule} from "@angular/material/core";
+import {FormsModule} from "@angular/forms";
 
 registerLocaleData(localeFr, 'fr');
 
@@ -22,7 +28,8 @@ registerLocaleData(localeFr, 'fr');
   declarations: [
     AppComponent,
     MembersComponent,
-    TripsComponent
+    TripsComponent,
+    TripDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -34,7 +41,12 @@ registerLocaleData(localeFr, 'fr');
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    MatButtonModule
+    MatButtonModule,
+    MatDialogModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    FormsModule
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr-FR'}

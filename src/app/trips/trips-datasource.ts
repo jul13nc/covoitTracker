@@ -4,13 +4,8 @@ import { MatSort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
 import { Observable, of as observableOf, merge } from 'rxjs';
 import {Trip} from "../model/trip";
+import {BackendService} from "../backend.service";
 
-
-// TODO: replace this with real data from your application
-const EXAMPLE_DATA: Trip[] = [
-  {id: 1, date: new Date(Date.now()), driver: 'loeb', passengers:['helena']},
-
-];
 
 /**
  * Data source for the Trips view. This class should
@@ -18,12 +13,13 @@ const EXAMPLE_DATA: Trip[] = [
  * (including sorting, pagination, and filtering).
  */
 export class TripsDataSource extends DataSource<Trip> {
-  data: Trip[] = EXAMPLE_DATA;
+  data: Trip[] = [];
   paginator: MatPaginator | undefined;
   sort: MatSort | undefined;
 
-  constructor() {
+  constructor(private backendService: BackendService) {
     super();
+    this.backendService.getTrips().subscribe(trips =>this.data = trips)
   }
 
   /**
