@@ -1,11 +1,11 @@
 export interface MemberDB {
-  id: number;
+  id: string;
   name: string;
 
 }
 
 export interface Member {
-  id: number;
+  id: string;
   name: string;
   tripStats: TripsStats[];
   nbPoints: number,

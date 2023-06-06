@@ -5,13 +5,13 @@ import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 
 export interface TripDialogResult {
   date: Date,
-  driver: number,
-  passengers: number[]
+  driver: string,
+  passengers: string[]
 }
 
 export interface TripDialogData {
   date: Date,
-  driver: number,
+  driver: string,
   passengers: number[]
 }
 
