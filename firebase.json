@@ -5,6 +5,7 @@
   },
   "hosting": [
     {
+      "target": "covoitTracker",
       "public": "dist/covoit-tracker",
       "ignore": [
         "firebase.json",
