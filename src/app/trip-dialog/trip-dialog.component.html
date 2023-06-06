@@ -1,13 +1,15 @@
 <h4>Ajouter un trajet</h4>
 
+<mat-dialog-content>
+<!--  [formGroup]="form">-->
 <div class="formField">
-  <input matInput [matDatepicker]="picker" placeholder="Date du trajet">
+  <input matInput [matDatepicker]="picker" placeholder="Date du trajet" [(ngModel)]="data.date">
   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker #picker></mat-datepicker>
 </div>
 
 <div class="formField">
-  <mat-select [(value)]="driver" placeholder="Pilote" (selectionChange)="updatePassengers()">
+  <mat-select [(value)]="data.driver" placeholder="Pilote" (selectionChange)="updatePassengers()">
     <mat-option *ngFor="let member of members" [value]="member.id">
       {{member.name}}
     </mat-option>
@@ -15,13 +17,16 @@
 </div>
 
 <div class="formField">
-  <mat-select multiple="true" placeholder="Passagers">
-    <mat-option *ngFor="let member of passagers" [value]="member.id">
+  <mat-select multiple="true" [(value)]="data.passengers" placeholder="Passagers">
+    <mat-option *ngFor="let member of passengers" [value]="member.id">
       {{member.name}}
     </mat-option>
   </mat-select>
 </div>
 
+</mat-dialog-content>
+<mat-dialog-actions>
 <div class="formField">
-  <button mat-button mat-raised-button>Add</button>
+  <button mat-button mat-raised-button [mat-dialog-close]="data">OK</button>
 </div>
+</mat-dialog-actions>
