@@ -31,15 +31,10 @@
       3 pers </th>
     <td mat-cell *matCellDef="let member"> {{member.nbPoints3}} </td>
   </ng-container>
-  <ng-container matColumnDef="nbPoints4">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header="nbPoints4" class="centeredHeader">
-      4 pers </th>
-    <td mat-cell *matCellDef="let member"> {{member.nbPoints4}} </td>
-  </ng-container>
-  <ng-container matColumnDef="nbPoints5">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header="nbPoints5" class="centeredHeader">
-      5 pers</th>
-    <td mat-cell *matCellDef="let member"> {{member.nbPoints5}} </td>
+  <ng-container matColumnDef="nbPoints4More">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header="nbPoints4More" class="centeredHeader">
+      4 + pers </th>
+    <td mat-cell *matCellDef="let member"> {{member.nbPoints4More}} </td>
   </ng-container>
   <ng-container matColumnDef="stats">
     <th mat-header-cell *matHeaderCellDef mat-sort-header="stats" class="centeredHeader">

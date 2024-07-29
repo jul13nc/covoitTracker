@@ -101,8 +101,7 @@ export class BackendService {
     member.nbPoints = this.computePointsForPassengersNumber( member,0);
     member.nbPoints2 = this.computePointsForPassengersNumber( member,2);
     member.nbPoints3 = this.computePointsForPassengersNumber( member,3);
-    member.nbPoints4 = this.computePointsForPassengersNumber( member,4);
-    member.nbPoints5 = this.computePointsForPassengersNumber( member,5);
+    member.nbPoints4More = this.computePointsForPassengersNumberAndMore( member,4);
 
     return member
   }
@@ -117,6 +116,21 @@ export class BackendService {
     })
     // Add 1 point per passenger when driver
     nbPoints -= member.tripStats.filter(trip => trip.nbPerson == nbPersonCounting || nbPersonCounting == 0).map(trip => trip.nbPassenger).reduce(function (result, item) {
+      return result + item
+    })
+    return nbPoints;
+  }
+
+  // Compute points for number of passenger
+  // If 0 passed, mean compute points for all trips
+  private computePointsForPassengersNumberAndMore(member: Member, nbPersonCounting: Number) {
+    // Add 3.5 points per trip when driving
+    var nbPoints = 0
+    nbPoints += member.tripStats.filter(trip => trip.nbPerson >= nbPersonCounting).map(trip => trip.nbDrive).reduce(function (result, item) {
+      return result + item * 3.5
+    }, 0)
+    // Remove 1 point per trip when passenger
+    nbPoints -= member.tripStats.filter(trip => trip.nbPerson >= nbPersonCounting).map(trip => trip.nbPassenger).reduce(function (result, item) {
       return result + item
     })
     return nbPoints;

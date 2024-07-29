@@ -22,7 +22,7 @@ export class MembersComponent implements AfterViewInit {
     this.dataSource = new MembersDatasource(backendService);
   }
 
-  columnsToDisplay = ['name','nbPoints2','nbPoints3','nbPoints4','nbPoints5', 'km','co2', 'stats'];
+  columnsToDisplay = ['name','nbPoints2','nbPoints3','nbPoints4More','km','co2', 'stats'];
 
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
