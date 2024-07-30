@@ -20,7 +20,7 @@ export class TripsComponent implements AfterViewInit {
   dataSource: TripsDataSource;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['date', 'driver','passengers'];
+  displayedColumns = ['date', 'driver','passengers','id'];
 
   constructor(private dialog: MatDialog, private backendService: BackendService, private cdref: ChangeDetectorRef) {
     this.dataSource = new TripsDataSource(backendService);
