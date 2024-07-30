@@ -100,7 +100,8 @@ export class BackendService {
     member.tripStats.push(computeStatsForTrips(trips, 4, member))
     member.tripStats.push(computeStatsForTrips(trips, 5, member))
     member.co2 = this.getCo2(member)
-    member.km = this.getKm(member)
+    member.kmTotal = this.getKmTotal(member)
+    member.kmPass = this.getKmPassager(member)
 
     member.nbPoints = this.computePointsForPassengersNumber(member, 0);
     member.nbPoints2 = this.computePointsForPassengersNumber(member, 2);
@@ -159,9 +160,18 @@ export class BackendService {
 
   }
 
-  getKm(member: Member): number {
+  getKmTotal(member: Member): number {
     var nbTrajets = member.tripStats.map(function (trip) {
       return trip.nbDrive + trip.nbPassenger
+    }).reduce(function (total, currentValue) {
+      return total + currentValue
+    })
+    return (nbTrajets * KM_AR_LABALME);
+  }
+
+  getKmPassager(member: Member): number {
+    var nbTrajets = member.tripStats.map(function (trip) {
+      return trip.nbPassenger
     }).reduce(function (total, currentValue) {
       return total + currentValue
     })
