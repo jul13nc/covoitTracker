@@ -87,7 +87,7 @@ export class MembersDatasource extends DataSource<Member> {
         case 'nbPoints4More':
           return compare(a.nbPoints4More, b.nbPoints4More, isAsc);
         case 'km':
-          return compare(a.km, b.km, isAsc);
+          return compare(a.kmTotal, b.kmTotal, isAsc);
         case 'co2':
           return compare(a.co2, b.co2, isAsc);
         // case 'passengers': return compare(a.passengers, b.passengers, isAsc)

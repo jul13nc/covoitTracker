@@ -13,7 +13,8 @@ export interface Member {
   nbPoints2: number,
   nbPoints3: number,
   nbPoints4More: number,
-  km: number,
+  kmTotal: number,
+  kmPass: number,
   co2: number
 }
 

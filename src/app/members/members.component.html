@@ -10,11 +10,11 @@
   </ng-container>
   <ng-container matColumnDef="km">
     <th mat-header-cell *matHeaderCellDef mat-sort-header class="centeredHeader"> Km parcourus</th>
-    <td mat-cell *matCellDef="let member"> {{member.km | number : '1.0-0'}} Km </td>
+    <td mat-cell *matCellDef="let member"> {{member.kmTotal | number : '1.0-0'}} km </td>
   </ng-container>
   <ng-container matColumnDef="co2">
     <th mat-header-cell *matHeaderCellDef mat-sort-header class="centeredHeader"> Co2 économisé</th>
-    <td mat-cell *matCellDef="let member"> {{member.co2 | number : '1.0-3'}} Kg </td>
+    <td mat-cell *matCellDef="let member"> {{member.co2 | number : '1.0-3'}} Kg ({{member.kmPass | number : '1.0-0'}} Km)</td>
   </ng-container>
   <ng-container matColumnDef="nbPoints">
     <th mat-header-cell *matHeaderCellDef mat-sort-header="nbPoints" class="centeredHeader">
