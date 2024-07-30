@@ -1,12 +1,13 @@
 export interface MemberDB {
   id: string;
   name: string;
-
+  hidden: boolean;
 }
 
 export interface Member {
   id: string;
   name: string;
+  hidden: boolean;
   tripStats: TripsStats[];
   nbPoints: number,
   nbPoints2: number,
