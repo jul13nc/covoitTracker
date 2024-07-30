@@ -1,18 +1,18 @@
 export interface MemberDB {
   id: string;
   name: string;
-
+  hidden: boolean;
 }
 
 export interface Member {
   id: string;
   name: string;
+  hidden: boolean;
   tripStats: TripsStats[];
   nbPoints: number,
   nbPoints2: number,
   nbPoints3: number,
-  nbPoints4: number,
-  nbPoints5: number,
+  nbPoints4More: number,
   km: number,
   co2: number
 }

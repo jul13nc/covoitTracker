@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Member, MemberDB, TripsStats} from "./model/member";
-import {combineLatest, find, first, Observable, of, switchMap, tap} from "rxjs";
+import {combineLatest, filter, Observable} from "rxjs";
 import {Trip, TripDB} from "./model/trip";
 import {AngularFirestore} from "@angular/fire/compat/firestore";
-import {filter, map} from "rxjs/operators";
+import {map} from "rxjs/operators";
 
 const KM_AR_LABALME = 46.3 * 2
 
@@ -13,8 +13,8 @@ const KM_AR_LABALME = 46.3 * 2
 export class BackendService {
 
   tripsDB$: Observable<TripDB[]> = new Observable<TripDB[]>()
-  membersDB$ : Observable<MemberDB[]> = new Observable<MemberDB[]>()
-  members$ : Observable<Member[]> = new Observable<Member[]>()
+  membersDB$: Observable<MemberDB[]> = new Observable<MemberDB[]>()
+  members$: Observable<Member[]> = new Observable<Member[]>()
 
   constructor(private store: AngularFirestore) {
     this.initMembersAndTrips()
@@ -24,15 +24,17 @@ export class BackendService {
     // Use combineLatest
     this.membersDB$ = this.store.collection('membres').snapshotChanges().pipe(
       map(elems => elems.map(responseItem => {
-        let values = responseItem.payload.doc.data()
-        var member: MemberDB = <MemberDB>new Object()
-        // @ts-ignore
-        member.name = values.prenom// + " " + values.nom
-        // @ts-ignore
-        member.id = responseItem.payload.doc.id
-        return member
-      })
-    ))
+          let values = responseItem.payload.doc.data()
+          var member: MemberDB = <MemberDB>new Object()
+          // @ts-ignore
+          member.name = values.prenom// + " " + values.nom
+          // @ts-ignore
+          member.id = responseItem.payload.doc.id
+          // @ts-ignore
+          member.hidden = values.hidden || false
+          return member
+        }).filter(member => !member.hidden)
+      ))
 
     this.tripsDB$ = this.store.collection('voyages').snapshotChanges().pipe(map(
       responseItems =>
@@ -62,7 +64,7 @@ export class BackendService {
   getTrips(): Observable<Trip[]> {
     // return this.trips$
     return combineLatest(this.tripsDB$, this.membersDB$).pipe(
-      map( ([trips,members]) => {
+      map(([trips, members]) => {
         return trips.map(tripDB => {
           var trip: Trip = <Trip>new Object()
           trip.id = tripDB.id
@@ -80,8 +82,10 @@ export class BackendService {
 
   getMembers(): Observable<Member[]> {
     return combineLatest(this.tripsDB$, this.membersDB$).pipe(
-      map( ([trips,members]) => {
-        return members.map(member => {return this.countMemberTrips(member , trips)})
+      map(([trips, members]) => {
+        return members.map(member => {
+          return this.countMemberTrips(member, trips)
+        })
       })
     )
   }
@@ -98,11 +102,10 @@ export class BackendService {
     member.co2 = this.getCo2(member)
     member.km = this.getKm(member)
 
-    member.nbPoints = this.computePointsForPassengersNumber( member,0);
-    member.nbPoints2 = this.computePointsForPassengersNumber( member,2);
-    member.nbPoints3 = this.computePointsForPassengersNumber( member,3);
-    member.nbPoints4 = this.computePointsForPassengersNumber( member,4);
-    member.nbPoints5 = this.computePointsForPassengersNumber( member,5);
+    member.nbPoints = this.computePointsForPassengersNumber(member, 0);
+    member.nbPoints2 = this.computePointsForPassengersNumber(member, 2);
+    member.nbPoints3 = this.computePointsForPassengersNumber(member, 3);
+    member.nbPoints4More = this.computePointsForPassengersNumberAndMore(member, 4);
 
     return member
   }
@@ -117,6 +120,21 @@ export class BackendService {
     })
     // Add 1 point per passenger when driver
     nbPoints -= member.tripStats.filter(trip => trip.nbPerson == nbPersonCounting || nbPersonCounting == 0).map(trip => trip.nbPassenger).reduce(function (result, item) {
+      return result + item
+    })
+    return nbPoints;
+  }
+
+  // Compute points for number of passenger
+  // If 0 passed, mean compute points for all trips
+  private computePointsForPassengersNumberAndMore(member: Member, nbPersonCounting: Number) {
+    // Add 3.5 points per trip when driving
+    var nbPoints = 0
+    nbPoints += member.tripStats.filter(trip => trip.nbPerson >= nbPersonCounting).map(trip => trip.nbDrive).reduce(function (result, item) {
+      return result + item * 3.5
+    }, 0)
+    // Remove 1 point per trip when passenger
+    nbPoints -= member.tripStats.filter(trip => trip.nbPerson >= nbPersonCounting).map(trip => trip.nbPassenger).reduce(function (result, item) {
       return result + item
     })
     return nbPoints;
@@ -140,6 +158,7 @@ export class BackendService {
     this.store.collection('voyages').add(trip)
 
   }
+
   getKm(member: Member): number {
     var nbTrajets = member.tripStats.map(function (trip) {
       return trip.nbDrive + trip.nbPassenger
