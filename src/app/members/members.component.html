@@ -14,7 +14,9 @@
   </ng-container>
   <ng-container matColumnDef="co2">
     <th mat-header-cell *matHeaderCellDef mat-sort-header class="centeredHeader"> Co2 économisé</th>
-    <td mat-cell *matCellDef="let member"> {{member.co2 | number : '1.0-3'}} Kg ({{member.kmPass | number : '1.0-0'}} Km)</td>
+    <td mat-cell *matCellDef="let member">
+      <div>{{member.co2 | number : '1.0-3'}} Kg </div>
+      <div>({{member.kmPass | number : '1.0-0'}} Km)</div></td>
   </ng-container>
   <ng-container matColumnDef="nbPoints">
     <th mat-header-cell *matHeaderCellDef mat-sort-header="nbPoints" class="centeredHeader">
@@ -33,7 +35,7 @@
   </ng-container>
   <ng-container matColumnDef="nbPoints4More">
     <th mat-header-cell *matHeaderCellDef mat-sort-header="nbPoints4More" class="centeredHeader">
-      4 + pers </th>
+      4+ pers </th>
     <td mat-cell *matCellDef="let member"> {{member.nbPoints4More}} </td>
   </ng-container>
   <ng-container matColumnDef="stats">
