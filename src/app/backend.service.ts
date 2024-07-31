@@ -5,7 +5,7 @@ import {Trip, TripDB} from "./model/trip";
 import {AngularFirestore} from "@angular/fire/compat/firestore";
 import {map} from "rxjs/operators";
 
-const KM_AR_LABALME = 45.5 * 2
+const KM_AR_LABALME = 46 * 2
 
 @Injectable({
   providedIn: 'root'
