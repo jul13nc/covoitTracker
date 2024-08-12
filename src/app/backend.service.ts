@@ -183,7 +183,7 @@ export class BackendService {
       return trip.nbPassenger
     }).reduce(function (total, currentValue) {
       return total + currentValue
-    }) * KM_AR_LABALME) * 0.1;
+    }) * KM_AR_LABALME) * 0.12;
   }
 
 }
